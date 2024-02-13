@@ -15,9 +15,13 @@
 static void	child(char **path, char **av, char **envp, int pipes[2])
 {
 	char	**p;
+	char	**cmd;
 	int		fd;
 	int		i;
 
+	fd = open(av[1], O_RDONLY);
+	dup2(fd, 0);
+	dup2(pipes[1], 1);
 	p = cp_path(path);
 	i = 0;
 	while (p[i] != NULL)
@@ -27,31 +31,31 @@ static void	child(char **path, char **av, char **envp, int pipes[2])
 		i++;
 	}
 	i = search_path(p);
-	fd = open(av[1], O_RDONLY);
-	dup2(fd, 0);
-	dup2(pipes[1], 1);
+	cmd = get_cmd(ft_split(av[2], ' '));
 	close(pipes[0]);
-	execve(p[i], av, envp);
+	execve(p[i], cmd, envp);
 }
 
 static void	parent(char **path, char **av, char **envp, int pipes[2])
 {
-	int	i;
-	int	fd;
+	int		i;
+	int		fd;
+	char	**cmd;
 
 	i = 0;
 	fd = open(av[4], O_WRONLY, O_CREAT, O_TRUNC);
+	dup2(pipes[0], 0);
+	dup2(fd, 1);
 	while (path[i] != NULL)
 	{
 		path[i] = ft_strjoin(path[i], "/");
 		path[i] = ft_strjoin(path[i], av[3]);
 		i++;
 	}
+	cmd = get_cmd(ft_split(av[3], ' '));
 	i = search_path(path);
-	dup2(pipes[0], 0);
-	dup2(fd, 1);
 	close(pipes[1]);
-	execve(path[i], av, envp);
+	execve(path[i], cmd, envp);
 }
 
 int	main(int ac, char **av, char **envp)

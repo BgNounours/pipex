@@ -59,3 +59,28 @@ char	**cp_path(char **path)
 	re[i] == NULL;
 	return (re);
 }
+
+char	**get_cmd(char **cmd)
+{
+	char	**re;
+	int		i;
+
+	i = 0;
+	while (cmd[i] != NULL)
+		i++;
+	re = malloc(sizeof(char *) * (i - 1));
+	i = 0;
+	while (cmd[i] != NULL)
+	{
+		re[i] = ft_strdup(cmd[i]);
+		i++;
+	}
+	i = 0;
+	while (cmd[i] != NULL)
+	{
+		free(cmd[i]);
+		i++;
+	}
+	free(cmd[i]);
+	return (re);
+}

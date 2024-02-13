@@ -23,6 +23,7 @@
 char	**get_path(char **envp);
 int		search_path(char **path);
 char	**cp_path(char **path);
+char	**get_cmd(char **cmd);
 
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
